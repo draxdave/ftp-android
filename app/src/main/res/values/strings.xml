@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ftp</string>
+    <string name="title_activity_home">Home</string>
+    <string name="login_msg">Signing in ...</string>
+</resources>
