@@ -1,4 +1,4 @@
-package ir.drax.ftp;
+package ir.drax.ftp.ftp;
 
 public class Constant {
     public static String serverUrl = "drax.ir";

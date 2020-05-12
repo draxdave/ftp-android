@@ -1,19 +1,13 @@
 package ir.drax.ftp;
 
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.util.Log;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
-import it.sauronsoftware.ftp4j.FTPClient;
-import it.sauronsoftware.ftp4j.FTPException;
-import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
-
-import java.io.IOException;
+import ir.drax.ftp.ftp.On;
 
 public class Home extends Base {
 
-    private TextView message;
     private RecyclerView recyclerView;
 
 
@@ -24,16 +18,31 @@ public class Home extends Base {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        message = findViewById(R.id.message);
         recyclerView = findViewById(R.id.list);
 
 
         message(R.string.login_msg);
-        ftp.login(new On() {
+        ftp.Go(FTP.Commands.LOGIN, new On() {
             @Override
-            public void Connected() {
-                Toast.makeText(Home.this, "Done", Toast.LENGTH_SHORT).show();
+            public void done(Object o) {
                 message("Connected");
+                ftp.Go(FTP.Commands.LIST_DIR, new On() {
+                    @Override
+                    public void done(Object o) {
+                        String[] names = (String[]) o;
+                        for (String name : names) {
+                            Log.e("name",name);
+
+                        }
+                            Log.e("Done","ssss");
+                    }
+
+                    @Override
+                    public void fail(String message) {
+                        message(message);
+
+                    }
+                });
             }
 
             @Override

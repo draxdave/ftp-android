@@ -8,11 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import it.sauronsoftware.ftp4j.FTPClient;
-import it.sauronsoftware.ftp4j.FTPException;
-import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
-
-import java.io.IOException;
 
 public class Base extends AppCompatActivity {
     FTP ftp;
@@ -20,7 +15,7 @@ public class Base extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ftp = ftp.getInstance();
+        ftp = FTP.getInstance();
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -36,7 +31,7 @@ public class Base extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ftp.disconnect();
+        ftp.Go(FTP.Commands.DISCONNECT);
         super.onDestroy();
     }
 
