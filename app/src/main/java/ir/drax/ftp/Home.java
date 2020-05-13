@@ -39,15 +39,18 @@ public class Home extends Base {
         ftp.Go(Commands.Login(new On(Home.this) {
             @Override
             public void done(Object o) {
+                super.done(o);
                 message("Connected");
                 ftp.Go(Commands.ListRoot(new On(Home.this) {
                     @Override
                     public void done(Object o) {
+                        super.done(o);
                         loadList((FTPFile[]) o);
                     }
 
                     @Override
                     public void fail(String message) {
+                        super.fail(message);
                         message(message);
 
                     }
@@ -56,6 +59,7 @@ public class Home extends Base {
 
             @Override
             public void fail(String message) {
+                super.fail(message);
                 message(message);
             }
         }));
@@ -81,11 +85,13 @@ public class Home extends Base {
                 ftp.Go(Commands.ListDir(item.getName(), new On(Home.this) {
                     @Override
                     public void done(Object o) {
+                        super.done(o);
                         loadList((FTPFile[]) o);
                     }
 
                     @Override
                     public void fail(String message) {
+                        super.fail(message);
                         message(message);
                     }
                 }));
@@ -97,6 +103,7 @@ public class Home extends Base {
                 ftp.Go(Commands.GetFile(item.getName(),createFile(item), new On(Home.this) {
                     @Override
                     public void done(Object o) {
+                        super.done(o);
                         boolean state = (boolean) o;
                         if (state)
                             Toast.makeText(Home.this, item.getName()+" Downloaded successfully!", Toast.LENGTH_SHORT).show();
@@ -107,6 +114,7 @@ public class Home extends Base {
 
                     @Override
                     public void fail(String message) {
+                        super.fail(message);
                         message(message);
                     }
                 }));
@@ -119,11 +127,13 @@ public class Home extends Base {
         ftp.Go(Commands.ListUpperDir(new On(Home.this) {
             @Override
             public void done(Object o) {
+                super.done(o);
                 loadList((FTPFile[]) o);
             }
 
             @Override
             public void fail(String message) {
+                super.fail(message);
                 message(message);
             }
         }));
@@ -155,6 +165,7 @@ public class Home extends Base {
         ftp.Go(Commands.GetCurrentDir(new On(Home.this) {
             @Override
             public void done(Object o) {
+                super.done(o);
                 if (o.equals("/"))
                     Home.super.onBackPressed();
 
@@ -164,6 +175,7 @@ public class Home extends Base {
 
             @Override
             public void fail(String message) {
+                super.fail(message);
                 Home.super.onBackPressed();
             }
         }));
