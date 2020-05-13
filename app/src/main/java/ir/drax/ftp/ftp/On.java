@@ -1,6 +1,16 @@
 package ir.drax.ftp.ftp;
 
-public interface On {
-    public void done(Object o);
-    public void fail(String message);
+public abstract class On {
+    Init init;
+    public On(){}
+    public On(Init init){
+        this.init=init;
+    }
+    public void done(Object o){
+        if (init!=null)init.loading(false);
+    }
+    public void fail(String message){
+        if (init!=null)init.loading(false);
+    }
+    public void progress(int progress){}
 }

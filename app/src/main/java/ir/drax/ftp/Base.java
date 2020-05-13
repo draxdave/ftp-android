@@ -5,17 +5,20 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import ir.drax.ftp.ftp.Commands;
+import ir.drax.ftp.ftp.Init;
 
-public class Base extends AppCompatActivity {
+public class Base extends AppCompatActivity implements Init {
     FTP ftp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ftp = FTP.getInstance();
+        ftp = FTP.getInstance(this,this);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -31,12 +34,18 @@ public class Base extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ftp.Go(FTP.Commands.DISCONNECT);
+        ftp.Go(Commands.Disconnect());
         super.onDestroy();
     }
 
     void message(int text){message(getString(text));}
     void message(String text){
         ((TextView)findViewById(R.id.message)).setText(text);
+    }
+
+    @Override
+    public void loading(boolean on) {
+        if (on)findViewById(R.id.loading).setVisibility(View.VISIBLE);
+        else findViewById(R.id.loading).setVisibility(View.GONE);
     }
 }

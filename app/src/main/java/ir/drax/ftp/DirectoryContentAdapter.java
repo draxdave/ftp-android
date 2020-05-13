@@ -5,20 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import ir.top.niroucard.data.entities.Category;
+import ir.drax.ftp.ftp.Content;
 
 import java.util.List;
 
-public class DirectoryContentAdapter extends RecyclerView.Adapter<CategoriesAdapter.MyViewHolder> {
-    private List<Category> items;
+public class DirectoryContentAdapter extends RecyclerView.Adapter<DirectoryContentAdapter.MyViewHolder> {
+    private List<Content> items;
     private Context c;
     private On listener;
-    public DirectoryContentAdapter(Context ctx, List<Category> moviesList, On onClickListener) {
+    public DirectoryContentAdapter(Context ctx, List<Content> moviesList, On onClickListener) {
         this.c = ctx;
         this.items = moviesList;
         this.listener = onClickListener;
@@ -27,26 +24,44 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<CategoriesAdap
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_category, parent, false);
+                .inflate(R.layout.content_item, parent, false);
 
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final Category item = items.get(position);
-        holder.name.setText(item.getTitle());
-        try {
-            Glide.with(c)
-                    .load(item.getIconUrl())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.round_placeholder)
-                    .into(holder.icon);
+        final Content item = items.get(position);
+        holder.name.setText(item.getName());
 
-
-        } catch (Exception ex) {
+        if (item.getType()==1) {
+            holder.icon.setImageResource(R.drawable.folder);
+            holder.modified.setText("");
+            holder.size.setText("");
         }
-        holder.btn.setOnClickListener(v -> listener.Click(item));
+        else if (item.getType()==0){
+            holder.icon.setImageResource(R.drawable.file);
+            holder.modified.setText(item.getModified().getYear()+ "/"+item.getModified().getMonth()+ "/"+item.getModified().getDay());
+            holder.size.setText(getSize(item.getSize()));
+        }
+        else if (item.getType()==-1) {
+            holder.icon.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
+            holder.modified.setText("");
+            holder.size.setText("");
+        }
+
+        holder.root.setOnClickListener(v -> listener.Click(item));
+    }
+
+    private String getSize(Long size) {
+        if (size<1024)
+            return size +" Bytes";
+        else if (size<1024 * 1024)
+            return (size / (1024 * 1024))+" KB";
+        if (size<1024*1024*1024)
+            return (size / (1024 * 1024 * 1024))+" MB";
+        else
+            return (size / (1024 * 1024 * 1024 * 1024)) + " GB";
     }
 
     @Override
@@ -55,19 +70,20 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<CategoriesAdap
     }
 
     public interface On {
-        public void Click(Category category);
+        public void Click(Content category);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name;
+        public TextView name,size,modified;
         public ImageView icon;
-        public LinearLayout btn;
-
+        View root;
         public MyViewHolder(View view) {
             super(view);
-            name = view.findViewById(R.id.itemName);
-            icon = view.findViewById(R.id.itemImg);
-            btn = view.findViewById(R.id.layout);
+            name = view.findViewById(R.id.title);
+            icon = view.findViewById(R.id.icon);
+            size = view.findViewById(R.id.size);
+            modified = view.findViewById(R.id.modified);
+            root = view.findViewById(R.id.root);
         }
     }
 
