@@ -2,4 +2,11 @@
     <string name="app_name">ftp</string>
     <string name="title_activity_home">Ftp navigator</string>
     <string name="login_msg">Signing in …</string>
+    <string name="options_duplicate">Duplicate</string>
+    <string name="options_remove">Remove</string>
+    <string name="options_edit">Edit</string>
+    <string name="options_sync">Sync</string>
+    <string name="never">Never connected</string>
+    <string name="connect">Connect</string>
+    <string name="frequent">Profiles</string>
 </resources>

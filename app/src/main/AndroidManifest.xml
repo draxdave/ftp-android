@@ -14,7 +14,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".Home"
+                android:name=".ui.Home"
                 android:label="@string/title_activity_home"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,6 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.Browser" />
     </application>
 
 </manifest>

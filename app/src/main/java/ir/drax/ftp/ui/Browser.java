@@ -1,4 +1,4 @@
-package ir.drax.ftp;
+package ir.drax.ftp.ui;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -7,9 +7,13 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ir.drax.ftp.ftp.Commands;
-import ir.drax.ftp.ftp.Content;
-import ir.drax.ftp.ftp.On;
+import com.google.gson.Gson;
+import ir.drax.ftp.R;
+import ir.drax.ftp.data.sharedPreferences.model.Profile;
+import ir.drax.ftp.service.ftp.Commands;
+import ir.drax.ftp.service.ftp.Content;
+import ir.drax.ftp.service.ftp.On;
+import ir.drax.ftp.ui.browser.BrowserAdapter;
 import it.sauronsoftware.ftp4j.FTPFile;
 
 import java.io.File;
@@ -17,17 +21,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home extends Base {
-
+public class Browser extends Base {
+    public static String ACTIVE_PROFILE_KEY = "active_ftp_profile";
     private RecyclerView recyclerView;
-    private DirectoryContentAdapter adapter;
+    private BrowserAdapter adapter;
     private List<Content> contentsList=new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_browser);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -36,33 +40,45 @@ public class Home extends Base {
 
 
         message(R.string.login_msg);
-        ftp.Go(Commands.Login(new On(Home.this) {
-            @Override
-            public void done(Object o) {
-                super.done(o);
-                message("Connected");
-                ftp.Go(Commands.ListRoot(new On(Home.this) {
+
+        Profile profile = new Gson().fromJson(getIntent().getStringExtra(ACTIVE_PROFILE_KEY),Profile.class);
+
+        ftp.Do(Commands.Login(
+                profile.getUrl(),
+                profile.getUsername(),
+                profile.getPassword(),
+                profile.getName(),
+                new On(Browser.this) {
                     @Override
                     public void done(Object o) {
                         super.done(o);
-                        loadList((FTPFile[]) o);
+                        profile.setLastConnect(System.currentTimeMillis());
+                        dataManager.updateProfile(profile);
+
+                        message("Connected");
+                        ftp.Do(Commands.ListRoot(new On(Browser.this) {
+                            @Override
+                            public void done(Object o) {
+                                super.done(o);
+                                loadList((FTPFile[]) o);
+                            }
+
+                            @Override
+                            public void fail(String message) {
+                                super.fail(message);
+                                message(message);
+
+                            }
+                        }));
                     }
 
                     @Override
                     public void fail(String message) {
                         super.fail(message);
-                        message(message);
-
+                        Browser.this.setResult(RESULT_CANCELED);
+                        getIntent().putExtra(ACTIVE_PROFILE_KEY,message);
                     }
                 }));
-            }
-
-            @Override
-            public void fail(String message) {
-                super.fail(message);
-                message(message);
-            }
-        }));
     }
 
     private void loadList(FTPFile[] ftpFiles) {
@@ -79,10 +95,10 @@ public class Home extends Base {
 
     private void setupRecycler() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DirectoryContentAdapter(this, contentsList, item -> {
+        adapter = new BrowserAdapter(this, contentsList, item -> {
 
             if (item.getType()==1)//Relative dir
-                ftp.Go(Commands.ListDir(item.getName(), new On(Home.this) {
+                ftp.Do(Commands.ListDir(item.getName(), new On(Browser.this) {
                     @Override
                     public void done(Object o) {
                         super.done(o);
@@ -100,15 +116,15 @@ public class Home extends Base {
                 listUpperDir();
 
             } else if (item.getType()==0) {//File
-                ftp.Go(Commands.GetFile(item.getName(),createFile(item), new On(Home.this) {
+                ftp.Do(Commands.GetFile(item.getName(),createFile(item), new On(Browser.this) {
                     @Override
                     public void done(Object o) {
                         super.done(o);
                         boolean state = (boolean) o;
                         if (state)
-                            Toast.makeText(Home.this, item.getName()+" Downloaded successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Browser.this, item.getName()+" Downloaded successfully!", Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(Home.this, item.getName()+" Failed!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Browser.this, item.getName()+" Failed!", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -124,7 +140,7 @@ public class Home extends Base {
     }
 
     private void listUpperDir() {
-        ftp.Go(Commands.ListUpperDir(new On(Home.this) {
+        ftp.Do(Commands.ListUpperDir(new On(Browser.this) {
             @Override
             public void done(Object o) {
                 super.done(o);
@@ -162,12 +178,12 @@ public class Home extends Base {
 
     @Override
     public void onBackPressed() {
-        ftp.Go(Commands.GetCurrentDir(new On(Home.this) {
+        ftp.Do(Commands.GetCurrentDir(new On(Browser.this) {
             @Override
             public void done(Object o) {
                 super.done(o);
                 if (o.equals("/"))
-                    Home.super.onBackPressed();
+                    Browser.super.onBackPressed();
 
                 else
                     listUpperDir();
@@ -176,7 +192,7 @@ public class Home extends Base {
             @Override
             public void fail(String message) {
                 super.fail(message);
-                Home.super.onBackPressed();
+                Browser.super.onBackPressed();
             }
         }));
 

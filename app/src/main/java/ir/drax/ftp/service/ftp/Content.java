@@ -1,4 +1,4 @@
-package ir.drax.ftp.ftp;
+package ir.drax.ftp.service.ftp;
 
 import java.util.Date;
 

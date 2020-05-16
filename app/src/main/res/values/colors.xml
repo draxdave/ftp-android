@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">@color/xanadu</color>
+    <color name="colorSecondary">@color/tuscany</color>
+    <color name="colorPrimaryDark">@color/ebony</color>
+    <color name="colorSecondaryDark">@color/cinereous</color>
+    <color name="colorAccent">#FF5252</color>
+
+
+
+    <color name="xanadu">#667761</color>
+    <color name="ebony">#545E56</color>
+    <color name="cinereous">#6B5B58</color>
+    <color name="tuscany">#B79492</color>
+    <color name="platinum">#EAE1DF</color>
+    <color name="milky">#DFDFDF</color>
+    <color name="dark_white">#eeeeee</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="transparent_50">#99ffffff</color>
 </resources>

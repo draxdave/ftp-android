@@ -1,4 +1,4 @@
-package ir.drax.ftp;
+package ir.drax.ftp.ui.browser;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,15 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-import ir.drax.ftp.ftp.Content;
+import ir.drax.ftp.R;
+import ir.drax.ftp.service.ftp.Content;
 
 import java.util.List;
 
-public class DirectoryContentAdapter extends RecyclerView.Adapter<DirectoryContentAdapter.MyViewHolder> {
+public class BrowserAdapter extends RecyclerView.Adapter<BrowserAdapter.MyViewHolder> {
     private List<Content> items;
     private Context c;
     private On listener;
-    public DirectoryContentAdapter(Context ctx, List<Content> moviesList, On onClickListener) {
+    public BrowserAdapter(Context ctx, List<Content> moviesList, On onClickListener) {
         this.c = ctx;
         this.items = moviesList;
         this.listener = onClickListener;

@@ -1,4 +1,4 @@
-package ir.drax.ftp.ftp;
+package ir.drax.ftp.service.ftp;
 
 public abstract class On {
     Init init;

@@ -1,4 +1,4 @@
-package ir.drax.ftp.ftp;
+package ir.drax.ftp.service.ftp;
 
 import java.io.File;
 
@@ -11,7 +11,7 @@ public class Commands{
         CURRENT_DIR,
         GET_FILE
     }
-    public static Command Login(On on){ return new Command(AvailableCommands.LOGIN,on); }
+    public static Command Login(String serverUrl,String username,String pass,String account, On on ){ return new Command(AvailableCommands.LOGIN,new Object[]{serverUrl,username,pass,account},on); }
 
     public static Command Disconnect(){ return new Command(AvailableCommands.DISCONNECT); }
 

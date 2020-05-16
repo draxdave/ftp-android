@@ -1,11 +1,10 @@
-package ir.drax.ftp;
+package ir.drax.ftp.service;
 
 import android.app.Activity;
 import android.util.Log;
-import ir.drax.ftp.ftp.Command;
-import ir.drax.ftp.ftp.Commands;
-import ir.drax.ftp.ftp.Constant;
-import ir.drax.ftp.ftp.Init;
+import ir.drax.ftp.service.ftp.Command;
+import ir.drax.ftp.service.ftp.Commands;
+import ir.drax.ftp.service.ftp.Init;
 import it.sauronsoftware.ftp4j.*;
 
 import java.io.File;
@@ -35,8 +34,13 @@ public class FTP implements Runnable{
 
     private void login(){
         try {
-            client.connect(Constant.serverUrl);
-            client.login(Constant.username,Constant.pass,"Drax");
+            String serverUrl = (String) command.params[0];
+            String username = (String) command.params[1];
+            String pass = (String) command.params[2];
+            String accountName = (String) command.params[3];
+
+            client.connect(serverUrl);
+            client.login(username, pass,accountName);
 
             activity.runOnUiThread(() -> command.on.done(true));
 
@@ -193,7 +197,7 @@ public class FTP implements Runnable{
 
     }
 
-    public void Go(Command command){
+    public void Do(Command command){
         init.loading(true);
         this.command = command;
         new Thread(this).start();

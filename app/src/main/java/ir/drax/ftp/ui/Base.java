@@ -1,4 +1,4 @@
-package ir.drax.ftp;
+package ir.drax.ftp.ui;
 
 
 import android.Manifest;
@@ -9,17 +9,24 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import ir.drax.ftp.ftp.Commands;
-import ir.drax.ftp.ftp.Init;
+import ir.drax.ftp.data.DataManager;
+import ir.drax.ftp.service.FTP;
+import ir.drax.ftp.R;
+import ir.drax.ftp.service.ftp.Commands;
+import ir.drax.ftp.service.ftp.Init;
+import ir.drax.ftp.util.LoadingView;
 
 public class Base extends AppCompatActivity implements Init {
     FTP ftp;
+    public DataManager dataManager;
+    public LoadingView loadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ftp = FTP.getInstance(this,this);
-
+        dataManager  = DataManager.getInstance(this);
+        loadingView = new LoadingView(this).attach(getWindow().getDecorView().findViewById(android.R.id.content));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -34,7 +41,7 @@ public class Base extends AppCompatActivity implements Init {
 
     @Override
     protected void onDestroy() {
-        ftp.Go(Commands.Disconnect());
+        ftp.Do(Commands.Disconnect());
         super.onDestroy();
     }
 
